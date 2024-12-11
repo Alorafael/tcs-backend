@@ -3,6 +3,7 @@ const router = express();
 const { con } = require("../database/database");
 const jwt = require('jsonwebtoken');
 
+
 router.use(express.json());
  
 router.post("/", (req, res) =>{

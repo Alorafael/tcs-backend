@@ -3,6 +3,7 @@ const router = express.Router();
 require('dotenv').config();
 router.use(express.json());
 const { con } = require("../database/database");
+const verifyToken = require("../helpers/index");
 
 router.post('/', (req, res) => {
     try {
@@ -60,12 +61,47 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', (req, res) => {
+
     try{
 
-    }
-    catch{
+        //verifyToken(token)
+
+        //Conexão Banco de Dados
+        con.connect(err => {
+            if(err) {
+                console.error('Error connecting to the database:', err.message);
+                return;
+            }
+            console.log('Connected to the MySQL database.');
+        })
+
+        con.query(`SELECT * FROM users`, (err, results) =>{
+            if (err) {
+                console.error('Error executing query:', err.message);
+                return;
+            }
+            data = [];
+            results.forEach((element) => {
+                json = {senha: element.senha, email: element.email, nome: element.nome};
+                data.push(json)
+            });
+            json = JSON.stringify(data)
+            return res.status(201).send(json);
+            })        
+
         
+        //return res.status(200).send(json);
+
     }
+
+    catch(error){
+
+        console.log(error);
+
+        return res.json({"mensagem": 'Erro interno do servidor', success: false});
+
+    }
+
 });
 
 module.exports = router;
