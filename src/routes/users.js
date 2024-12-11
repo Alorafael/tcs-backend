@@ -104,4 +104,19 @@ router.get('/', (req, res) => {
 
 });
 
+router.get('/:email', (req,res) => {
+    const email = req.params.email;
+
+})
+
+router.put('/:email', (req,res) => {
+
+
+})
+
+router.delete('/:email', (req,res) => {
+
+
+})
+
 module.exports = router;
