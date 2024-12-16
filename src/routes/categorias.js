@@ -40,7 +40,7 @@ router.get('/', (req,res) => {
             console.error('Error conecting to the database: ', err.message);
             return;
         }
-        return res.status(201).send({ "mensagem": 'sucesso!', "nome": nome})
+        return res.status(201).send({ "mensagem": 'sucesso!', "nome": nome })
 
 
     })
@@ -59,12 +59,20 @@ router.put('/:id', (req,res) => {
         return res.status(200).send({ })
     })
 
-    con.query(`UPDATE categorias SET nome = ${nome} WHERE idcategoria = ${id}`, (err, results) => {
+    con.query(`UPDATE categorias SET nome = '${nome}' WHERE idcategoria = '${id}'`, (err, results) => {
         if(err){
             console.error('Error conecting to the database: ', err.message);
             return;
         }
-        return res.status(201).send({ "nome": nome })
+    })
+
+    con.query(`SELECT * FROM categorias WHERE email = '${email}'`, (err, results) => {
+        if(err){
+            console.error('Error conecting to the database: ', err.message);
+            return;
+        }
+        console.log(results[0])
+        return res.status(201).send({ "mensagem": "sucesso!", "nome": results[0].nome });
     })
 
 })
@@ -81,12 +89,12 @@ router.delete('/:id', (req,res) => {
         return res.status(200).send({ })
     })
 
-    con.query(`DELETE FROM categorias WHERE idcategoria = ${id}`, (err, results) => {
+    con.query(`DELETE FROM categorias WHERE idcategoria = '${id}'`, (err, results) => {
         if(err){
             console.error('Error conecting to the database: ', err.message);
             return;
         }
-        return res.status(201).send({})
+        return res.status(201).send()
     })
 })
 

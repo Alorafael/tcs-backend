@@ -22,19 +22,19 @@ router.post('/', (req, res) => {
                     })
 
                     // Validação Email
-                    con.query(`SELECT * FROM users WHERE email = '${email}'`, (err, results) => {
+                    con.query(`SELECT * FROM user WHERE email = '${email}'`, (err, results) => {
                         if (err) {
                             console.error('Error executing query:', err.message);
                             return;
                         }
                         if(results == ""){
                             //Cadastro do Usuário
-                            con.query(`INSERT INTO users (nome, email, senha) VALUES ('${nome}', '${email}', '${senha}')`, (err, results) =>{
+                            con.query(`INSERT INTO user (nome, email, senha) VALUES ('${nome}', '${email}', '${senha}')`, (err, results) =>{
                             if (err) {
                                 console.error('Error executing query:', err.message);
                                 return;
                             }
-                            return res.status(201).send({ "mensagem": 'sucesso!', "email": email, "nome": nome, "senha": senha});
+                            return res.status(201).send({ "mensagem": 'sucesso!', "email": email, "nome": nome, "senha": senha });
                             })
                         }
                         else{
@@ -75,7 +75,7 @@ router.get('/', (req, res) => {
             console.log('Connected to the MySQL database.');
         })
 
-        con.query(`SELECT * FROM users`, (err, results) =>{
+        con.query(`SELECT * FROM user`, (err, results) =>{
             if (err) {
                 console.error('Error executing query:', err.message);
                 return;
@@ -115,12 +115,13 @@ router.get('/:email', (req,res) => {
         console.log('Connected to the MySQL database.');
     })
 
-    con.query(`SELECT * FROM categorias WHERE email = ${emai}`, (err, results) => {
+    con.query(`SELECT * FROM user WHERE email = '${email}'`, (err, results) => {
         if(err){
             console.error('Error conecting to the database: ', err.message);
             return;
         }
-        return res.status(201).send({ "nome": nome })
+        console.log(results[0])
+        return res.status(201).send({ "mensagem": "sucesso!", "email": results[0].email, "nome": results[0].nome, "senha": results[0].senha})
     })
 
 })
@@ -130,6 +131,7 @@ router.put('/:email', (req,res) => {
     const email = req.params.email;
     const { nome, senha } = req.body;
 
+
     con.connect(err => {
         if(err) {
             console.error('Error connecting to the database:', err.message);
@@ -137,15 +139,21 @@ router.put('/:email', (req,res) => {
         }
         console.log('Connected to the MySQL database.');
     })
-
-    con.query(`UPDATE categorias SET nome = ${nome}, senha = ${senha} WHERE email = ${email}`, (err, results) => {
+    console.log(nome)
+    console.log(senha)
+    con.query(`UPDATE user SET nome = '${nome}', senha = '${senha}' WHERE email = '${email}'`, (err, results) => {
         if(err){
             console.error('Error conecting to the database: ', err.message);
             return;
         }
-        return res.status(201).send({})
     })
-
+    con.query(`SELECT * FROM user WHERE email = '${email}'`, (err, results) => {
+        if(err){
+            console.error('Error conecting to the database: ', err.message);
+            return;
+        }
+        return res.status(201).send({ "mensagem": "sucesso!", "nome": results[0].nome, "senha": results[0].senha })
+    })
 })
 
 router.delete('/:email', (req,res) => {
@@ -160,14 +168,13 @@ router.delete('/:email', (req,res) => {
         console.log('Connected to the MySQL database.');
     })
 
-    con.query(`DELETE FROM users WHERE email = ${email}`, (err, results) => {
+    con.query(`DELETE FROM user WHERE email = '${email}'`, (err, results) => {
         if(err){
             console.error('Error conecting to the database: ', err.message);
             return;
         }
-        return res.status(201).send({})
+        return res.status(201).send()
     })
-
 })
 
 module.exports = router;
