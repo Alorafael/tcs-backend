@@ -107,15 +107,66 @@ router.get('/', (req, res) => {
 router.get('/:email', (req,res) => {
     const email = req.params.email;
 
+    con.connect(err => {
+        if(err) {
+            console.error('Error connecting to the database:', err.message);
+            return;
+        }
+        console.log('Connected to the MySQL database.');
+    })
+
+    con.query(`SELECT * FROM categorias WHERE email = ${emai}`, (err, results) => {
+        if(err){
+            console.error('Error conecting to the database: ', err.message);
+            return;
+        }
+        return res.status(201).send({ "nome": nome })
+    })
+
 })
 
 router.put('/:email', (req,res) => {
 
+    const email = req.params.email;
+    const { nome, senha } = req.body;
+
+    con.connect(err => {
+        if(err) {
+            console.error('Error connecting to the database:', err.message);
+            return;
+        }
+        console.log('Connected to the MySQL database.');
+    })
+
+    con.query(`UPDATE categorias SET nome = ${nome}, senha = ${senha} WHERE email = ${email}`, (err, results) => {
+        if(err){
+            console.error('Error conecting to the database: ', err.message);
+            return;
+        }
+        return res.status(201).send({})
+    })
 
 })
 
 router.delete('/:email', (req,res) => {
 
+    const email = req.params.email;
+
+    con.connect(err => {
+        if(err) {
+            console.error('Error connecting to the database:', err.message);
+            return;
+        }
+        console.log('Connected to the MySQL database.');
+    })
+
+    con.query(`DELETE FROM users WHERE email = ${email}`, (err, results) => {
+        if(err){
+            console.error('Error conecting to the database: ', err.message);
+            return;
+        }
+        return res.status(201).send({})
+    })
 
 })
 
