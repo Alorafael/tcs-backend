@@ -34,7 +34,7 @@ router.post('/', (req, res) => {
                                 console.error('Error executing query:', err.message);
                                 return;
                             }
-                            return res.status(201).send({ "mensagem": 'sucesso!', "email": email, "nome": nome, "senha": senha });
+                            return res.status(201).send({ "mensagem": 'sucesso!', "email": email, "nome": nome, "senha": senha, "admin": false });
                             })
                         }
                         else{
@@ -64,9 +64,8 @@ router.get('/', (req, res) => {
 
     try{
 
-        //verifyToken(token)
+        token = verifyToken(req)
 
-        //Conexão Banco de Dados
         con.connect(err => {
             if(err) {
                 console.error('Error connecting to the database:', err.message);
@@ -74,24 +73,30 @@ router.get('/', (req, res) => {
             }
             console.log('Connected to the MySQL database.');
         })
-
-        con.query(`SELECT * FROM user`, (err, results) =>{
+    
+        con.query(`SELECT * FROM token WHERE token = '${token}'`, (err, results) => {
             if (err) {
                 console.error('Error executing query:', err.message);
-                return;
+                return res.status(404).send({ "mensagem": "Não autenticado" });
             }
-            data = [];
-            results.forEach((element) => {
-                json = {senha: element.senha, email: element.email, nome: element.nome};
-                data.push(json)
-            });
-            json = JSON.stringify(data)
-            return res.status(201).send(json);
-            })        
-
-        
-        //return res.status(200).send(json);
-
+            if(results == ""){
+                return res.status(400).send({ "mensagem": "Token Invalido"});
+            }
+            con.query(`SELECT * FROM user`, (err, results) =>{
+                if (err) {
+                    console.error('Error executing query:', err.message);
+                    return;
+                }
+                data = [];
+                results.forEach((element) => {
+                    json = {senha: element.senha, email: element.email, nome: element.nome, admin: element.admin};
+                    data.push(json)
+                });
+                console.log(results.admin);
+                json = JSON.stringify(data)
+                return res.status(201).send(json);
+                })      
+        })
     }
 
     catch(error){
@@ -107,6 +112,8 @@ router.get('/', (req, res) => {
 router.get('/:email', (req,res) => {
     const email = req.params.email;
 
+    token = verifyToken(req)
+
     con.connect(err => {
         if(err) {
             console.error('Error connecting to the database:', err.message);
@@ -115,15 +122,34 @@ router.get('/:email', (req,res) => {
         console.log('Connected to the MySQL database.');
     })
 
-    con.query(`SELECT * FROM user WHERE email = '${email}'`, (err, results) => {
-        if(err){
-            console.error('Error conecting to the database: ', err.message);
-            return;
+    con.query(`SELECT * FROM token WHERE token = '${token}'`, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err.message);
+            return res.status(404).send({ "mensagem": "Não autenticado" });
         }
-        console.log(results[0])
-        return res.status(201).send({ "mensagem": "sucesso!", "email": results[0].email, "nome": results[0].nome, "senha": results[0].senha})
+        if(results == ""){
+            return res.status(400).send({ "mensagem": "Token Invalido"});
+        }
+        con.connect(err => {
+            if(err) {
+                console.error('Error connecting to the database:', err.message);
+                return;
+            }
+            console.log('Connected to the MySQL database.');
+        })
+    
+        con.query(`SELECT * FROM user WHERE email = '${email}'`, (err, results) => {
+            if(err){
+                console.error('Error conecting to the database: ', err.message);
+                return;
+            }
+            if(results == ""){
+                return res.status(400).send({ "mensagem": "Email não encontrado"});
+            }
+            console.log(results[0])
+            return res.status(201).send({ "mensagem": "sucesso!", "email": results[0].email, "nome": results[0].nome, "senha": results[0].senha})
+        })
     })
-
 })
 
 router.put('/:email', (req,res) => {

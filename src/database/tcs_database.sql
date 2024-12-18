@@ -74,8 +74,8 @@ CREATE TABLE `user` (
 -- Extraindo dados da tabela `user`
 --
 
-INSERT INTO `user` (`iduser`, `email`, `nome`, `senha`, `admin`) VALUES
-(1, 'user@mail.com', 'Teste', '123456', 0);
+INSERT INTO user (nome, email, senha, admin) VALUES 
+("admin", "admin@email.com", "123456",true);
 
 --
 -- Índices para tabelas despejadas

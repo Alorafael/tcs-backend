@@ -25,7 +25,6 @@ router.post("/", (req, res) =>{
         }
         if(results != ""){
             const token = jwt.sign({ email: results.email, admin: results.admin }, "webtoken", { expiresIn: '15m' });
-            res.set('Authorization', `Bearer ${token}`);
 
             con.query(`INSERT INTO token (email, token) VALUES ('${email}', '${token}')`)
 
