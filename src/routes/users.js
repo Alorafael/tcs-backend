@@ -130,13 +130,6 @@ router.get('/:email', (req,res) => {
         if(results == ""){
             return res.status(400).send({ "mensagem": "Token Invalido"});
         }
-        con.connect(err => {
-            if(err) {
-                console.error('Error connecting to the database:', err.message);
-                return;
-            }
-            console.log('Connected to the MySQL database.');
-        })
     
         con.query(`SELECT * FROM user WHERE email = '${email}'`, (err, results) => {
             if(err){
@@ -157,6 +150,7 @@ router.put('/:email', (req,res) => {
     const email = req.params.email;
     const { nome, senha } = req.body;
 
+    token = verifyToken(req)
 
     con.connect(err => {
         if(err) {
@@ -165,20 +159,28 @@ router.put('/:email', (req,res) => {
         }
         console.log('Connected to the MySQL database.');
     })
-    console.log(nome)
-    console.log(senha)
-    con.query(`UPDATE user SET nome = '${nome}', senha = '${senha}' WHERE email = '${email}'`, (err, results) => {
-        if(err){
-            console.error('Error conecting to the database: ', err.message);
-            return;
+
+    con.query(`SELECT * FROM token WHERE token = '${token}'`, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err.message);
+            return res.status(404).send({ "mensagem": "Não autenticado" });
         }
-    })
-    con.query(`SELECT * FROM user WHERE email = '${email}'`, (err, results) => {
-        if(err){
-            console.error('Error conecting to the database: ', err.message);
-            return;
+        if(results == ""){
+            return res.status(400).send({ "mensagem": "Token Invalido"});
         }
-        return res.status(201).send({ "mensagem": "sucesso!", "nome": results[0].nome, "senha": results[0].senha })
+        con.query(`UPDATE user SET nome = '${nome}', senha = '${senha}' WHERE email = '${email}'`, (err, results) => {
+            if(err){
+                console.error('Error conecting to the database: ', err.message);
+                return;
+            }
+        })
+        con.query(`SELECT * FROM user WHERE email = '${email}'`, (err, results) => {
+            if(err){
+                console.error('Error conecting to the database: ', err.message);
+                return;
+            }
+            return res.status(201).send({ "mensagem": "sucesso!", "nome": results[0].nome, "senha": results[0].senha })
+        })
     })
 })
 
@@ -186,6 +188,8 @@ router.delete('/:email', (req,res) => {
 
     const email = req.params.email;
 
+    token = verifyToken(req)
+
     con.connect(err => {
         if(err) {
             console.error('Error connecting to the database:', err.message);
@@ -194,12 +198,21 @@ router.delete('/:email', (req,res) => {
         console.log('Connected to the MySQL database.');
     })
 
-    con.query(`DELETE FROM user WHERE email = '${email}'`, (err, results) => {
-        if(err){
-            console.error('Error conecting to the database: ', err.message);
-            return;
+    con.query(`SELECT * FROM token WHERE token = '${token}'`, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err.message);
+            return res.status(404).send({ "mensagem": "Não autenticado" });
         }
-        return res.status(201).send()
+        if(results == ""){
+            return res.status(400).send({ "mensagem": "Token Invalido"});
+        }
+        con.query(`DELETE FROM user WHERE email = '${email}'`, (err, results) => {
+            if(err){
+                console.error('Error conecting to the database: ', err.message);
+                return;
+            }
+            return res.status(201).send()
+        })
     })
 })
 
