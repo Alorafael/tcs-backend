@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const con = require("../database/database");
+const { con } = require("../database/database");
 const verifyToken = require("../helpers/index");
+router.use(express.json())
 
 router.post('/', (req,res) => {
 
-    const nome = req.body;
+    const { nome } = req.body;
 
     token = verifyToken(req)
 
@@ -25,7 +26,7 @@ router.post('/', (req,res) => {
         if(results == ""){
             return res.status(400).send({ "mensagem": "Token Invalido"});
         }
-        con.query(`INSERT INTO categorias (nome) VALUES (${nome})`, (err,results) => {
+        con.query(`INSERT INTO categorias (nome) VALUES ('${nome}')`, (err,results) => {
             if(err){
                 console.error('Error conecting to the database: ', err.message);
                 return;
@@ -67,7 +68,7 @@ router.get('/', (req,res) => {
                 data.push(json)
             });
             json = JSON.stringify(data)
-            return res.status(201).send(json);
+            return res.status(200).send(json);
         })
     })
 })
@@ -75,7 +76,7 @@ router.get('/', (req,res) => {
 
 router.put('/:id', (req,res) => {
     const id = req.params.id;
-    const nome = req.body
+    const { nome } = req.body
 
     token = verifyToken(req)
 
@@ -102,7 +103,7 @@ router.put('/:id', (req,res) => {
             }
         })
     
-        con.query(`SELECT * FROM categorias WHERE email = '${email}'`, (err, results) => {
+        con.query(`SELECT * FROM categorias WHERE idcategoria = '${id}'`, (err, results) => {
             if(err){
                 console.error('Error conecting to the database: ', err.message);
                 return;
