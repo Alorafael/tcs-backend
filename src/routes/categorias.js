@@ -7,6 +7,7 @@ router.use(express.json())
 router.post('/', (req,res) => {
 
     const { nome } = req.body;
+    console.log(req.body);
 
     token = verifyToken(req)
 
@@ -62,9 +63,10 @@ router.get('/', (req,res) => {
                 console.error('Error conecting to the database: ', err.message);
                 return;
             }
+            console.log(results)
             data = [];
             results.forEach((element) => {
-                json = {nome: element.nome};
+                json = {id: element.idcategoria, nome: element.nome};
                 data.push(json)
             });
             json = JSON.stringify(data)
@@ -142,7 +144,7 @@ router.delete('/:id', (req,res) => {
                 console.error('Error conecting to the database: ', err.message);
                 return;
             }
-            return res.status(201).send()
+            return res.status(200).send({})
         })
     })
 })

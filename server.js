@@ -7,7 +7,7 @@ const logout = require('./src/routes/logout');
 const categorias = require('./src/routes/categorias');
 const avisos = require('./src/routes/avisos');
 
-const PORT = 21000;
+const PORT = 22222;
 
 server.use(cors());
 server.use("/usuarios", users);
