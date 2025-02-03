@@ -22,10 +22,10 @@ router.post('/', (req,res) => {
     con.query(`SELECT * FROM token WHERE token = '${token}'`, (err, results) => {
         if (err) {
             console.error('Error executing query:', err.message);
-            return res.status(404).send({ "mensagem": "Não autenticado" });
+            return res.status(404).send({"mensagem": "Não autenticado" });
         }
         if(results == ""){
-            return res.status(400).send({ "mensagem": "Token Invalido"});
+            return res.status(400).send({"mensagem": "Token Invalido"});
         }
         con.query(`INSERT INTO categorias (nome) VALUES ('${nome}')`, (err,results) => {
             if(err){
@@ -53,10 +53,10 @@ router.get('/', (req,res) => {
     con.query(`SELECT * FROM token WHERE token = '${token}'`, (err, results) => {
         if (err) {
             console.error('Error executing query:', err.message);
-            return res.status(404).send({ "mensagem": "Não autenticado" });
+            return res.status(404).send({"mensagem": "Não autenticado" });
         }
         if(results == ""){
-            return res.status(400).send({ "mensagem": "Token Invalido"});
+            return res.status(400).send({"mensagem": "Token Invalido"});
         }
         con.query(`SELECT * FROM categorias`, (err, results) => {
             if(err){
@@ -93,10 +93,10 @@ router.put('/:id', (req,res) => {
     con.query(`SELECT * FROM token WHERE token = '${token}'`, (err, results) => {
         if (err) {
             console.error('Error executing query:', err.message);
-            return res.status(404).send({ "mensagem": "Não autenticado" });
+            return res.status(404).send({"mensagem": "Não autenticado" });
         }
         if(results == ""){
-            return res.status(400).send({ "mensagem": "Token Invalido"});
+            return res.status(400).send({"mensagem": "Token Invalido"});
         }
         con.query(`UPDATE categorias SET nome = '${nome}' WHERE idcategoria = '${id}'`, (err, results) => {
             if(err){
@@ -111,7 +111,7 @@ router.put('/:id', (req,res) => {
                 return;
             }
             console.log(results[0])
-            return res.status(201).send({ "mensagem": "sucesso!", "nome": results[0].nome });
+            return res.status(201).send({"mensagem": "sucesso!", "nome": results[0].nome });
         })
     })
 
