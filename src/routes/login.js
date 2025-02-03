@@ -26,13 +26,12 @@ router.post("/", (req, res) =>{
         }
         if(results != ""){
             let admin = results[0].admin
-            // if(admin == 1){
-                
-            //     admin = true;
-            // }
-            // else{
-            //     admin = false;
-            // }
+            if(admin == 1){
+                admin = true;
+            }
+            else{
+                admin = false;
+            }
             const payload = { email: results[0].email, admin: admin };
             console.log(payload)
             const token = jwt.sign(payload, "WEB_TOKEN");
