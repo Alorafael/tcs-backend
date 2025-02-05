@@ -13,6 +13,6 @@ server.use(cors());
 server.use("/usuarios", users);
 server.use("/login", login);
 server.use("/logout", logout);
-server.use("/categorias", categorias)
-server.use("/avisos", avisos)
+server.use("/categorias", categorias);
+server.use("/avisos", avisos);
 server.listen(PORT, () => console.log(`Ouvindo na porta: ${PORT}`));
