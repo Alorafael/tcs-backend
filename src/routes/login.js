@@ -33,7 +33,6 @@ router.post("/", (req, res) =>{
                 admin = false;
             }
             const payload = { email: results[0].email, admin: admin };
-            console.log(payload)
             const token = jwt.sign(payload, "WEB_TOKEN");
             jwt.verify(token, "WEB_TOKEN", (err, decoded) => {
                 if (err) {
