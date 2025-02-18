@@ -9,6 +9,7 @@ router.post("/", (req,res) => {
     console.log(req.body);
     const { idCategoria, descricao } = req.body;
 
+    console.log(idCategoria)
     token = verifyToken(req)
 
     con.connect(err => {
@@ -40,7 +41,7 @@ router.post("/", (req,res) => {
 router.get("/:idCategoria", (req,res) => {
 
     const idCategoria = req.params.idCategoria;
-
+    console.log(idCategoria)
     token = verifyToken(req)
 
     con.connect(err => {
@@ -67,7 +68,7 @@ router.get("/:idCategoria", (req,res) => {
             console.log(results)
             data = [];
             results.forEach((element) => {
-                json = {id: element.idaviso, idcateogria: element.idcategoria, descricao: element.descricao};
+                json = {id: element.idaviso, idcategoria: element.idcategoria, descricao: element.descricao};
                 data.push(json)
             });
             json = JSON.stringify(data)
