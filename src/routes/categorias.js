@@ -75,6 +75,42 @@ router.get('/', (req,res) => {
     })
 })
 
+router.get('/:id', (req,res) => {
+    const id = req.params.id;
+
+    token = verifyToken(req)
+
+    con.connect(err => {
+        if(err) {
+            console.error('Error connecting to the database:', err.message);
+            return;
+        }
+        console.log('Connected to the MySQL database.');
+    })
+
+    con.query(`SELECT * FROM token WHERE token = '${token}'`, (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err.message);
+            return res.status(404).send({ "mensagem": "Não autenticado" });
+        }
+        if(results == ""){
+            return res.status(400).send({ "mensagem": "Token Invalido"});
+        }
+    
+        con.query(`SELECT * FROM categorias WHERE idcategoria = '${id}'`, (err, results) => {
+            if(err){
+                console.error('Error conecting to the database: ', err.message);
+                return;
+            }
+            if(results == ""){
+                return res.status(400).send({ "mensagem": "Categoria não encontrada"});
+            }
+            console.log(results[0])
+            return res.status(201).send({ "mensagem": "sucesso!", "id": results[0].idcategoria, "nome": results[0].nome})
+        })
+    })
+})
+
 
 router.put('/:id', (req,res) => {
     const id = req.params.id;
